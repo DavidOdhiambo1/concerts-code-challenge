@@ -1,26 +1,20 @@
 class Band:
-    all = []
     def __init__(self, name, hometown):
         self.name = name
         self._hometown = None
         self._hometown_set = False
         self.hometown = hometown
-        Band.all.append(self)
-
     @property
     def name(self):
         return self._name
-
     @name.setter
     def name(self, name):
         if not isinstance(name, str) or len(name) < 1:
             raise Exception("name must be a non-empty string")
         self._name = name
-
     @property
     def hometown(self):
         return self._hometown
-
     @hometown.setter
     def hometown(self, value):
         if self._hometown_set:
@@ -30,11 +24,6 @@ class Band:
         self._hometown = value
         self._hometown_set = True
     
-
-
-    
-
-
     def concerts(self):
         return [concert for concert in Concert.all if concert.band == self]
 
@@ -48,10 +37,8 @@ class Band:
     def play_in_venue(self, venue, date):
         return Concert(date=date, band=self, venue=venue)
         
-
     def all_introductions(self):
         return [concert.introduction() for concert in self.concerts()]
-
 
 class Concert:
     all = []
@@ -100,13 +87,12 @@ class Concert:
     def introduction(self):
         return f"Hello {self.venue.city}!!!!! We are {self.band.name} and we're from {self.band.hometown}"
 
-
 class Venue:
-    all = []
+    
     def __init__(self, name, city):
         self.name = name
         self.city = city
-        Venue.all.append(self)
+     
     @property
     def name(self):
         return self._name
