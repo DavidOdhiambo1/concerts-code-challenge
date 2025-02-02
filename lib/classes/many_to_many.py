@@ -2,6 +2,8 @@ class Band:
     all = []
     def __init__(self, name, hometown):
         self.name = name
+        self._hometown = None
+        self._hometown_set = False
         self.hometown = hometown
         Band.all.append(self)
 
@@ -20,10 +22,13 @@ class Band:
         return self._hometown
 
     @hometown.setter
-    def hometown(self, hometown):
-        if not isinstance(hometown, str) or len(hometown) < 1:
+    def hometown(self, value):
+        if self._hometown_set:
+            raise AttributeError("Hometown is immutable after being set.")
+        if not isinstance(value, str) or len(value) < 1:
             raise Exception("hometown must be a non-empty string")
-        self._hometown = hometown
+        self._hometown = value
+        self._hometown_set = True
     
 
 
@@ -34,14 +39,18 @@ class Band:
         return [concert for concert in Concert.all if concert.band == self]
 
     def venues(self):
-        pass
+        list_of_venues = []
+        for concert in self.concerts():
+            if concert.venue not in list_of_venues:
+                list_of_venues.append(concert.venue)
+        return list_of_venues
 
     def play_in_venue(self, venue, date):
-        pass
+        return Concert(date=date, band=self, venue=venue)
         
 
     def all_introductions(self):
-        pass
+        return [concert.introduction() for concert in self.concerts()]
 
 
 class Concert:
@@ -93,9 +102,11 @@ class Concert:
 
 
 class Venue:
+    all = []
     def __init__(self, name, city):
         self.name = name
         self.city = city
+        Venue.all.append(self)
     @property
     def name(self):
         return self._name
@@ -119,4 +130,13 @@ class Venue:
         return [concert for concert in Concert.all if concert.venue == self]
 
     def bands(self):
-        return [concert.band for concert in self.concerts()]
+        list_of_bands = []
+        for concert in self.concerts():
+            if concert.band not in list_of_bands:
+                list_of_bands.append(concert.band)
+        return list_of_bands
+    
+    def concert_on(self, date):
+        for concert in self.concerts():
+            if concert.date == date:
+                return concert
